@@ -1038,10 +1038,11 @@ def init(job_type=None, dir=None, config=None, project=None, entity=None, reinit
         __stage_dir__ = "wandb"
         util.mkdir_exists_ok(wandb_dir())
 
-    try:
-        signal.signal(signal.SIGQUIT, _debugger)
-    except AttributeError:
-        pass
+    if threading.current_thread() is threading.main_thread():
+        try:
+            signal.signal(signal.SIGQUIT, _debugger)
+        except AttributeError:
+            pass
 
     try:
         run = wandb_run.Run.from_environment_or_defaults()
